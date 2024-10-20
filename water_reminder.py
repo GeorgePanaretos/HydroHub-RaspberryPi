@@ -4,8 +4,8 @@ import datetime
 import os
 
 # Telegram bot details
-bot_token = '7486737350:AAH9TtoqCCGN8P6-WoYJsQYaAqbS7WwcxWc'
-chat_id = '7976968853'
+bot_token = 'TOKEN'
+chat_id = 'CHAT_ID'
 
 # Water intake goal and tracking
 daily_goal_liters = 2.5  # Set your daily goal here
