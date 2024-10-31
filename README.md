@@ -1,96 +1,204 @@
 # HydroHub-RaspberryPi
 
+A Raspberry Pi-powered Telegram bot that helps you track your daily water intake and sends timely reminders to stay hydrated. This system combines hardware reliability with user-friendly interaction through Telegram.
 
-1. Set up your Raspberry Pi:
-   a. If you haven't already, install Raspberry Pi OS on your SD card.
-   b. Connect your Raspberry Pi to power, monitor, keyboard, and mouse.
-   c. Boot up the Raspberry Pi and connect it to the internet.
+## 🌟 Features
 
-2. Prepare the Raspberry Pi:
-   a. Open a terminal window.
-   b. Update your system:
-      ```
-      sudo apt update
-      sudo apt upgrade
-      ```
-   c. Install Python and pip if they're not already installed:
-      ```
-      sudo apt install python3 python3-pip
-      ```
-   d. Install the required library:
-      ```
-      pip3 install requests
-      ```
+- 🚰 Track daily water intake
+- ⏰ Hourly reminders during active hours
+- 🎯 Daily water intake goal tracking
+- 🌙 Quiet hours support
+- 👥 Multi-user support(sharing one common session)
+- 📊 Status updates and progress tracking
+- 🔄 Automatic daily reset
+- 🤖 Runs on Raspberry Pi
+- 🔧 Auto-start capability
+- 📝 Comprehensive logging
 
-3. Create a Telegram bot:
-   a. Open the Telegram app on your phone.
-   b. Search for "BotFather" and start a chat.
-   c. Send the command `/newbot` to create a new bot.
-   d. Follow the prompts to name your bot and choose a username for it.
-   e. BotFather will give you a token. Save this token; you'll need it later.
+## 📋 Requirements
 
-4. Get your Telegram chat ID:
-   a. Start a chat with your new bot in Telegram.
-   b. Send any message to the bot.
-   c. Open a web browser and go to:
-      ```
-      https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates
-      ```
-      Replace <YOUR_BOT_TOKEN> with the token you received from BotFather.
-   d. Look for the "chat" object in the response and find your "id". This is your chat ID.
+### Hardware
+- Raspberry Pi (any model with network connectivity)
+- SD card (8GB+ recommended)
+- Power supply for Raspberry Pi
+- Internet connection
 
-5. Create the water reminder script:
-   a. On your Raspberry Pi, open a text editor (like Nano):
-      ```
-      nano water_reminder.py
-      ```
-   b. Copy and paste the following code:
+### Software
+- Raspberry Pi OS
+- Python 3.6+
+- `requests` library
+- Telegram account
+- Telegram Bot Token
 
+## 🛠️ Installation
+
+### 1. Raspberry Pi Setup
+
+1. Install Raspberry Pi OS:
+   ```bash
+   # Update system
+   sudo apt update && sudo apt upgrade -y
+
+   # Install Python and pip if not present
+   sudo apt install python3 python3-pip
+   ```
+
+2. Install Required Library:
+   ```bash
+   pip3 install requests
+   ```
+
+### 2. Telegram Bot Setup
+
+1. Create a new bot:
+   - Open Telegram and search for "BotFather"
+   - Send `/newbot` command
+   - Follow prompts to name your bot
+   - Save the bot token provided
+
+2. Get Your Chat ID:
+   - Start a chat with your new bot
+   - Send any message
+   - Visit: `https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates`
+   - Find your chat ID in the response
+
+### 3. Software Installation
+
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/yourusername/hydrohub.git
+   cd hydrohub
+   ```
+
+2. Configure the bot:
+   ```bash
+   nano water_reminder.py
+   ```
+   
+3. Update these variables:
+   ```python
+   bot_token = 'YOUR_BOT_TOKEN'
+   chat_ids = ['YOUR_CHAT_ID', 'ADDITIONAL_CHAT_ID']  # Add multiple IDs if needed
+   daily_goal_liters = 2.5  # Adjust as needed
+   ```
+
+## ⚙️ Configuration
+
+### Quiet Hours
 ```python
-# Telegram bot details
-bot_token = 'YOUR_BOT_TOKEN'
-chat_id = 'YOUR_CHAT_ID'
-
+QUIET_HOURS_START = datetime.time(0, 0)    # 12:00 AM
+QUIET_HOURS_END = datetime.time(7, 30)     # 7:30 AM
 ```
 
-   c. Replace 'YOUR_BOT_TOKEN' and 'YOUR_CHAT_ID' with your actual bot token and chat ID.
-   d. Save the file and exit the editor (in Nano, press Ctrl+X, then Y, then Enter).
+### Daily Goal
+```python
+daily_goal_liters = 2.5  # Set your daily goal in liters
+```
 
-6. Test the app:
-   a. Run the script:
-      ```
-      python3 water_reminder.py
-      ```
-   b. You should receive a message on Telegram immediately, and then every hour after that.
-   c. To stop the script, press Ctrl+C in the terminal.
+## 🚀 Running the System
 
-7. Run the app in the background (optional):
-   If you want the app to keep running even when you close the terminal:
-   a. Use the `nohup` command to run the script:
-      ```
-      nohup python3 water_reminder.py &
-      ```
-   b. The app will now run in the background. You can close the terminal if you wish.
-   c. To stop the app later, you'll need to find its process ID and kill it:
-      ```
-      ps aux | grep water_reminder.py
-      kill <PROCESS_ID>
-      ```
-      Replace <PROCESS_ID> with the ID you find from the `ps` command.
+### Manual Start
+```bash
+python3 water_reminder.py
+```
 
-8. Set up autostart (optional):
-   To make the app start automatically when your Raspberry Pi boots:
-   a. Open the RC local file:
-      ```
-      sudo nano /etc/rc.local
-      ```
-   b. Before the `exit 0` line, add:
-      ```
-      python3 /home/pi/water_reminder.py &
-      ```
-      (Adjust the path if your script is located elsewhere)
-   c. Save and exit (Ctrl+X, Y, Enter).
-   d. Reboot your Raspberry Pi to test:
-      ```
-      sudo reboot
-      ```
+### Background Operation
+```bash
+nohup python3 water_reminder.py &
+```
+
+### Auto-start Setup
+1. Edit RC local file:
+   ```bash
+   sudo nano /etc/rc.local
+   ```
+
+2. Add before `exit 0`:
+   ```bash
+   python3 /home/pi/hydrohub/water_reminder.py &
+   ```
+
+3. Reboot to test:
+   ```bash
+   sudo reboot
+   ```
+
+## 📱 Usage
+
+### Bot Commands
+- Send number (e.g., `0.5`) - Log water intake in liters
+- `/start` - Get welcome message and instructions
+- `/status` - Check current water intake status
+- `/reset` - Reset daily intake to 0
+- `/clear` - Clear chat history
+
+### Features in Detail
+
+#### 1. Automatic Daily Reset
+- Midnight reset
+- All users notified
+- Progress tracking restarts
+
+#### 2. Goal Tracking
+- Real-time progress updates
+- Goal completion notifications
+- Smart reminder system
+
+#### 3. Multi-User Support
+- Synchronized updates
+- Shared tracking
+- Individual interaction
+
+#### 4. Logging System
+- File: `water_reminder.log`
+- Detailed timestamps
+- Error tracking
+- Performance monitoring
+
+## 🛡️ Security
+
+- Store bot token securely
+- Keep chat IDs private
+- Use environment variables for sensitive data
+- Regular system updates
+- Monitor access logs
+
+## 🔍 Troubleshooting
+
+### Common Issues
+
+1. Bot Not Responding
+   ```bash
+   # Check if process is running
+   ps aux | grep water_reminder.py
+   
+   # Check logs
+   tail -f water_reminder.log
+   ```
+
+2. Permission Issues
+   ```bash
+   # Fix permissions
+   chmod +x water_reminder.py
+   ```
+
+3. Network Problems
+   ```bash
+   # Test network
+   ping api.telegram.org
+   ```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/NewFeature`)
+3. Commit changes (`git commit -m 'Add NewFeature'`)
+4. Push to branch (`git push origin feature/NewFeature`)
+5. Open a Pull Request
+
+## 🙏 Acknowledgments
+
+- Telegram Bot API
+- Raspberry Pi Foundation
+- Python `requests` library contributors
+- Community feedback and contributions
