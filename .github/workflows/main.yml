@@ -35,12 +35,12 @@ jobs:
         pip install requests
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-    - name: Run Water Reminder Bot
-      run: |
-        python water_reminder.py
-      env:
-        BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-        CHAT_IDS: ${{ secrets.CHAT_IDS }}
+  #  - name: Run Water Reminder Bot
+  #    run: |
+  #      python water_reminder.py
+  #    env:
+  #      BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+  #      CHAT_IDS: ${{ secrets.CHAT_IDS }}
 
     - name: Archive logs
       if: always()
