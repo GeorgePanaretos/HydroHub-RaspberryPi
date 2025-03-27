@@ -1,0 +1,64 @@
+name: Water Reminder Bot
+
+on:
+  push:
+    branches:
+      - main
+ # schedule:
+ #  - cron: "0 * * * *"  # Run every hour
+  workflow_dispatch:  # Allow manual trigger
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  run-water-reminder:
+    runs-on: ubuntu-latest
+
+    env:
+      BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+      CHAT_IDS: ${{ secrets.CHAT_IDS }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.x"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+  #  - name: Run Water Reminder Bot
+  #    run: |
+  #      python water_reminder.py
+  #    env:
+  #      BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+  #      CHAT_IDS: ${{ secrets.CHAT_IDS }}
+
+    - name: Archive logs
+      if: always()
+      run: |
+        mkdir -p logs
+        cp water_reminder.log logs/water_reminder_$(date +'%Y%m%d_%H%M%S').log
+        echo "Logs archived."
+      continue-on-error: true
+
+    - name: Upload logs to GitHub Actions artifact
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: water-reminder-logs
+        path: logs/*.log
+
+    - name: Clean up logs
+      if: always()
+      run: |
+        rm -rf logs
+        echo "Logs cleaned."
